@@ -10,4 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, out.width = "600px",echo=FALSE}
 knitr::include_graphics("./frog_eating_cricket__19448.jpg")
+knitr::include_graphics("./")
 ```
+
+## [More Frogs](http://Tug-Simmons.github.io/Frogs)
