@@ -13,4 +13,4 @@ knitr::include_graphics("./frog_eating_cricket__19448.jpg")
 knitr::include_graphics("./")
 ```
 
-## [More Frogs](http://Tug-Simmons.github.io/Frogs)
+## [More Frogs](http://Tug-Simmons.github.io/Frogs) | [Resume](http://Tug-Simmons.github.io/Resume/Resume.pdf)
