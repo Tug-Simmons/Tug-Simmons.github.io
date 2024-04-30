@@ -1,0 +1,102 @@
+---
+title: "Camp Williams Herpetofauna Surveys"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(leaflet)
+library(geojson)
+library(sf)
+library(readxl)
+library(leaflet.extras)
+library(shiny)
+```
+
+```{r include=FALSE}
+geojsonfile <- ("./TrainingAreasCW.geojson")
+geojsondata <- sf::read_sf(geojsonfile)
+st_crs(geojsondata)
+geojsondata <- st_transform(geojsondata, 4326)
+herpdat <- read_xlsx("./AllHerpData2019_2023_XY.xlsx")
+herpdat <- herpdat %>% 
+  rename(longitude = Long, latitude = Lat)
+
+geojsondata <- st_transform(geojsondata, 4326)
+
+herpdat_sf <- st_as_sf(herpdat, coords = c("longitude", "latitude"), crs = 4326)
+
+coordinates <- data.frame(
+  longitude = unlist(lapply(geojsondata$geometry, function(x) x[[1]][,-1])),
+  latitude = unlist(lapply(geojsondata$geometry, function(x) x[[1]][,-2]))
+)
+
+merged_data <- st_join(geojsondata, herpdat_sf, join = st_intersects)
+
+```
+```{r, out.width = "600px",echo=FALSE}
+knitr::include_graphics("./snake.jpg")
+```
+
+```{r echo=FALSE}
+species_counts <- merged_data %>%
+  group_by(FEAT_NAME) %>%
+  summarize(species = paste(unique(species), collapse = "<br>"))
+
+polygon_species <- species_counts
+
+popup_content <- function(feature) {
+  if (!is.null(feature) && "FEAT_NAME" %in% names(feature) && "species" %in% names(feature)) {
+    feat_species <- unlist(strsplit(feature$species, "<br>"))
+    if (length(feat_species) > 0) {
+      species_list <- paste(feat_species, collapse = "<br>")
+      paste0("<b>FEAT_NAME:</b> ", feature$FEAT_NAME, "<br>",
+             "<b>Species:</b><br>", species_list)
+    } else {
+      paste0("<b>FEAT_NAME:</b> ", feature$FEAT_NAME, "<br>",
+             "<b>Species:</b><br>No species data available")
+    }
+  } else {
+    "No feature data available"
+  }
+}
+
+leaflet() %>%
+  addTiles() %>%
+  addPolygons(data = polygon_species, 
+              fillColor = ~colorFactor("viridis", species)(species), 
+              color = "black", 
+              weight = 2, fillOpacity = 0.5,
+              label = ~paste0("<b>FEAT_NAME:</b> ", FEAT_NAME, "<br>", "<b>Species:</b><br>", species), 
+              popup = ~popup_content(.), 
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 3,
+                                                  bringToFront = TRUE))
+```
+
+
+Camp Williams is a U.S National Guard Army base located in Bluffdale UT. Since 2019 extensive herpetological wildlife surveys have been conducted by the Environmental Resource Management divisionwith a primary focus on Great Basin Rattlesnake Research within the training areas. All observed herpetofauna are catalogued and recorded in all forms possible. To date there have been over 950 unique wildlife observations within the training range.
+
+
+```{r echo=FALSE}
+species_counts <- table(herpdat$species)
+
+species_counts_df <- as.data.frame(species_counts)
+colnames(species_counts_df) <- c("Species", "Total_Count")
+
+species_counts_df <- species_counts_df[order(-species_counts_df$Total_Count),]
+
+ggplot(species_counts_df, aes(x = reorder(Species, Total_Count), y = Total_Count)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Total Counts of Observed Species",
+       x = "Species", y = "Total Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+ The extremely high proportion of rattlesnake observations is due to den observations during the emergence and return parts of the season where large masses conglomerate in small areas. The high proportion of gopher snakes and yellow-bellied racers is due to the disproportionate aspect of road sampling as all reptiles observed on the road are recorded and this is predominantly those two species.
