@@ -81,7 +81,7 @@ leaflet() %>%
 ```
 
 
-Camp Williams is a U.S National Guard Army base located in Bluffdale UT. Since 2019 extensive herpetological wildlife surveys have been conducted by the Environmental Resource Management divisionwith a primary focus on Great Basin Rattlesnake Research within the training areas. All observed herpetofauna are catalogued and recorded in all forms possible. To date there have been over 950 unique wildlife observations within the training range.
+Camp Williams is a U.S National Guard Army base located in Bluffdale UT. Since 2019 extensive herpetological wildlife surveys have been conducted by the Environmental Resource Management division with a primary focus on Great Basin Rattlesnake Research within the training areas. All observed herpetofauna are cataloged and recorded in all forms possible. To date there have been over 950 unique wildlife observations within the training range.
 
 
 ```{r echo=FALSE}
@@ -100,7 +100,7 @@ ggplot(species_counts_df, aes(x = reorder(Species, Total_Count), y = Total_Count
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
- The extremely high proportion of rattlesnake observations is due to den observations during the emergence and return parts of the season where large masses conglomerate in small areas. The high proportion of gopher snakes and yellow-bellied racers is due to the disproportionate aspect of road sampling as all reptiles observed on the road are recorded and this is predominantly those two species.
+ The extremely high proportion of rattlesnake observations is due to den observations during the emergence and return parts of the season where large masses conglomerate in small areas. The high proportion of gopher snakes and yellow-bellied racers is due to the disproportionate aspect of road sampling as all reptiles observed on the road are recorded and the most frequently observed reptiles on the road are predominantly those two species.
  
 ```{r echo=FALSE}
 leaflet() %>%
